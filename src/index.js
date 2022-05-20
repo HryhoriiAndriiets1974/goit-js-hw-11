@@ -3,6 +3,13 @@ import { Notify } from 'notiflix/build/notiflix-notify-aio';
 import getRefs from './js/refs';
 import ImgApiService from './js/img-service';
 import imgCard from'./templates/img-card.hbs';
+// Описаний в документації
+import SimpleLightbox from "simplelightbox";
+// Додатковий імпорт стилів
+import "simplelightbox/dist/simple-lightbox.min.css";
+
+// var lightbox = new SimpleLightbox('.gallery a', { /* options */ });
+const lightbox = new SimpleLightbox('.gallery a');
 
 const refs = getRefs();
 const imgApiService = new ImgApiService();
@@ -19,6 +26,7 @@ function onSearch(e) {
   .then(({hits, totalHits}) => {
     Notify.info(`Hooray! We found ${totalHits} images.`);
     appendCardMarkup(hits);
+    lightbox.refresh();
   });
 }
 
