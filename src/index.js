@@ -9,7 +9,10 @@ import SimpleLightbox from "simplelightbox";
 import "simplelightbox/dist/simple-lightbox.min.css";
 
 // var lightbox = new SimpleLightbox('.gallery a', { /* options */ });
-const lightbox = new SimpleLightbox('.gallery a');
+const lightbox = new SimpleLightbox('.gallery a', {
+  captionsData: "alt",
+  captionDelay: 1000,
+});
 
 const refs = getRefs();
 const imgApiService = new ImgApiService();
@@ -22,8 +25,15 @@ function onSearch(e) {
   imgApiService.query = e.currentTarget.elements.searchQuery.value;
   imgApiService.resetPage();
 
+  if (!imgApiService.query) {
+    return Notify.warning('Sorry, there are no images matching your search query. Please try again.')
+  }
+
   imgApiService.fetchImg()
   .then(({hits, totalHits}) => {
+    if (totalHits === 0) {
+      return Notify.warning('Sorry, there are no images matching your search query. Please try again.')
+    }
     Notify.info(`Hooray! We found ${totalHits} images.`);
     appendCardMarkup(hits);
     lightbox.refresh();
