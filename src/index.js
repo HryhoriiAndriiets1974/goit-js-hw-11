@@ -14,6 +14,7 @@ const lightbox = new SimpleLightbox('.gallery a', {
   captionDelay: 1000,
 });
 
+let stopScroll = true;
 const refs = getRefs();
 const imgApiService = new ImgApiService();
 
@@ -23,6 +24,7 @@ refs.loadMore.addEventListener('click', onScroll)
 function onSearch(e) {
   e.preventDefault();
   clearImgGallary();
+  stopScroll = true;
   imgApiService.query = e.currentTarget.elements.searchQuery.value;
   imgApiService.resetPage();
 
@@ -44,6 +46,12 @@ function onSearch(e) {
 function onScroll(e) {
   imgApiService.fetchImg()
     .then(({hits}) => {
+
+      if (imgApiService.page > 13) {
+        stopScroll = false;
+        return Notify.warning("We're sorry, but you've reached the end of search results.");
+      }
+
       if (hits.length < 40) {
         Notify.warning("We're sorry, but you've reached the end of search results.");
         appendCardMarkup(hits);
@@ -75,10 +83,12 @@ window.scrollBy({
 }
 
 window.addEventListener('scroll',()=>{
-  console.log(window.scrollY) //scrolled from top
-  console.log(window.innerHeight) //visible part of screen
-  if(window.scrollY + window.innerHeight >=
-  document.documentElement.scrollHeight){
+  // console.log(window.scrollY + window.innerHeight) //scrolled from top
+  // console.log(document.documentElement.scrollHeight) //visible part of screen
+  console.log(window.scrollY + window.innerHeight +1 - document.documentElement.scrollHeight) //scrolled from top
+  if(window.scrollY + window.innerHeight + 1 >=
+  document.documentElement.scrollHeight && stopScroll) {
     onScroll();
   }
+
 })
