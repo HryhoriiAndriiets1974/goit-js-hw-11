@@ -19,7 +19,9 @@ const refs = getRefs();
 const imgApiService = new ImgApiService();
 
 refs.searchForm.addEventListener('submit', onSearch);
-refs.loadMore.addEventListener('click', onScroll)
+refs.loadMore.addEventListener('click', onScroll);
+refs.upBtn.addEventListener('click', onUpBtn);
+
 
 function onSearch(e) {
   e.preventDefault();
@@ -54,9 +56,8 @@ function onScroll(e) {
 
       if (hits.length < 40) {
         Notify.warning("We're sorry, but you've reached the end of search results.");
-        appendCardMarkup(hits);
-        return;
-      }
+       }
+    refs.upBtn.classList.remove('js-hidden');
     appendCardMarkup(hits);
     lightbox.refresh();
     smoothlyScroll();
@@ -69,6 +70,7 @@ function appendCardMarkup (data) {
 
 function clearImgGallary() {
   refs.imgGallery.innerHTML = "";
+  refs.upBtn.classList.add('js-hidden');
 }
 
 function smoothlyScroll() {
@@ -80,15 +82,19 @@ window.scrollBy({
   top: cardHeight * 2,
   behavior: "smooth",
 });
-}
+};
 
 window.addEventListener('scroll',()=>{
-  // console.log(window.scrollY + window.innerHeight) //scrolled from top
-  // console.log(document.documentElement.scrollHeight) //visible part of screen
   console.log(window.scrollY + window.innerHeight +1 - document.documentElement.scrollHeight) //scrolled from top
   if(window.scrollY + window.innerHeight + 1 >=
   document.documentElement.scrollHeight && stopScroll) {
     onScroll();
   }
+});
 
-})
+function onUpBtn() {
+  if (window.pageYOffset > 0) {
+    window.scrollBy(0, -80);
+    setTimeout(onUpBtn, 0);
+  }
+}
