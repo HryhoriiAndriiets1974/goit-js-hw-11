@@ -21,13 +21,13 @@ const imgApiService = new ImgApiService();
 refs.searchForm.addEventListener('submit', onSearch);
 refs.loadMore.addEventListener('click', onScroll);
 refs.upBtn.addEventListener('click', onUpBtn);
-
+window.addEventListener('scroll', infinitiScroll);
 
 function onSearch(e) {
   e.preventDefault();
   clearImgGallary();
   stopScroll = true;
-  imgApiService.query = e.currentTarget.elements.searchQuery.value;
+  imgApiService.query = e.currentTarget.elements.searchQuery.value.trim();
   imgApiService.resetPage();
 
   if (!imgApiService.query) {
@@ -42,6 +42,7 @@ function onSearch(e) {
     Notify.info(`Hooray! We found ${totalHits} images.`);
     appendCardMarkup(hits);
     lightbox.refresh();
+    // smoothlyScroll();
   });
 }
 
@@ -84,13 +85,12 @@ window.scrollBy({
 });
 };
 
-window.addEventListener('scroll',()=>{
-  console.log(window.scrollY + window.innerHeight +1 - document.documentElement.scrollHeight) //scrolled from top
+function infinitiScroll() {
+    console.log(window.scrollY + window.innerHeight +1 - document.documentElement.scrollHeight);
   if(window.scrollY + window.innerHeight + 1 >=
   document.documentElement.scrollHeight && stopScroll) {
     onScroll();
-  }
-});
+  }};
 
 function onUpBtn() {
   if (window.pageYOffset > 0) {

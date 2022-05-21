@@ -145,10 +145,12 @@ img {
   color: #de14b9;
   border: 3px solid #de14b9;
   transition: transform var(--animation-duration) var(--timing-function);
+  cursor: pointer;
   &:hover {
     background-color: #de14b9;
     color: white;
     transform: scale(1.5);
+
   }
 }
 
