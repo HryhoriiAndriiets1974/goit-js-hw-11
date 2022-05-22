@@ -15,13 +15,17 @@ const lightbox = new SimpleLightbox('.gallery a', {
 });
 
 let stopScroll = true;
+let autoScroll = false;
 const refs = getRefs();
 const imgApiService = new ImgApiService();
 
 refs.searchForm.addEventListener('submit', onSearch);
 refs.loadMore.addEventListener('click', onScroll);
 refs.upBtn.addEventListener('click', onUpBtn);
-window.addEventListener('scroll', infinitiScroll);
+document.addEventListener('DOMContentLoaded', infinitiScroll);
+
+// ========================================== bed old 1/2
+// window.addEventListener('scroll', infinitiScroll);
 
 function onSearch(e) {
   e.preventDefault();
@@ -42,11 +46,16 @@ function onSearch(e) {
     Notify.info(`Hooray! We found ${totalHits} images.`);
     appendCardMarkup(hits);
     lightbox.refresh();
+    autoScroll = true;
     // smoothlyScroll();
   });
 }
 
 function onScroll(e) {
+  if (!autoScroll) {
+    e.preventDefault();
+  }
+
   imgApiService.fetchImg()
     .then(({hits}) => {
 
@@ -62,6 +71,9 @@ function onScroll(e) {
     appendCardMarkup(hits);
     lightbox.refresh();
     smoothlyScroll();
+    })
+    .catch(error => {
+      console.log(error);
     })
 }
 
@@ -84,13 +96,32 @@ window.scrollBy({
   behavior: "smooth",
 });
 };
+// =============================================== bed old 2/2
+// function infinitiScroll() {
+//     console.log(window.scrollY + window.innerHeight +1 - document.documentElement.scrollHeight);
+//   if(window.scrollY + window.innerHeight + 1 >=
+//   document.documentElement.scrollHeight && stopScroll) {
+//     onScroll();
+//   }};
 
-function infinitiScroll() {
-    console.log(window.scrollY + window.innerHeight +1 - document.documentElement.scrollHeight);
-  if(window.scrollY + window.innerHeight + 1 >=
-  document.documentElement.scrollHeight && stopScroll) {
+  function infinitiScroll() {
+  let options = {
+    root: null,
+    rootMargins: "0px",
+    threshold: 0
+  };
+  const observer = new IntersectionObserver(handleIntersect, options);
+  observer.observe(document.querySelector("footer"));
+  //an initial load of some data
+  onScroll();
+};
+
+function handleIntersect(entries) {
+  if (entries[0].isIntersecting && stopScroll) {
+    // console.warn("something is intersecting with the viewport");
     onScroll();
-  }};
+  }
+}
 
 function onUpBtn() {
   if (window.pageYOffset > 0) {
