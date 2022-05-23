@@ -15,7 +15,7 @@ const lightbox = new SimpleLightbox('.gallery a', {
 });
 
 let stopScroll = true;
-let autoScroll = false;
+let onClickSearch = false;
 const refs = getRefs();
 const imgApiService = new ImgApiService();
 
@@ -31,6 +31,7 @@ function onSearch(e) {
   e.preventDefault();
   clearImgGallary();
   stopScroll = true;
+  onClickSearch = true;
   imgApiService.query = e.currentTarget.elements.searchQuery.value.trim();
   imgApiService.resetPage();
 
@@ -46,19 +47,16 @@ function onSearch(e) {
     Notify.info(`Hooray! We found ${totalHits} images.`);
     appendCardMarkup(hits);
     lightbox.refresh();
-    autoScroll = true;
     // smoothlyScroll();
   });
 }
 
 function onScroll(e) {
-  if (!autoScroll) {
-    e.preventDefault();
-  }
+
+  if (!onClickSearch) return;
 
   imgApiService.fetchImg()
     .then(({hits}) => {
-
       if (imgApiService.page > 13) {
         stopScroll = false;
         return Notify.warning("We're sorry, but you've reached the end of search results.");
@@ -111,7 +109,7 @@ window.scrollBy({
     threshold: 0
   };
   const observer = new IntersectionObserver(handleIntersect, options);
-  observer.observe(document.querySelector("footer"));
+  observer.observe(document.querySelector(".footer"));
   //an initial load of some data
   onScroll();
 };
@@ -125,7 +123,7 @@ function handleIntersect(entries) {
 
 function onUpBtn() {
   if (window.pageYOffset > 0) {
-    window.scrollBy(0, -80);
+    window.scrollBy(0, -40);
     setTimeout(onUpBtn, 0);
   }
 }
