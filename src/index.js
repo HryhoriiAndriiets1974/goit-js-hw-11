@@ -56,13 +56,19 @@ function onScroll(e) {
   if (!onClickSearch) return;
 
   imgApiService.fetchImg()
-    .then(({hits}) => {
-      if (imgApiService.page > 13) {
+    .then(({hits, totalHits}) => {
+      console.log('imgApiService.page');
+      console.log(imgApiService.page);
+      console.log(imgApiService.per_page);
+      console.log(Math.ceil(totalHits / imgApiService.per_page));
+
+        if (imgApiService.page > Math.ceil(totalHits / imgApiService.per_page)) {
         stopScroll = false;
+        console.log('erd', imgApiService.page);
         return Notify.warning("We're sorry, but you've reached the end of search results.");
       }
 
-      if (hits.length < 40) {
+      if (hits.length < imgApiService.per_page) {
         Notify.warning("We're sorry, but you've reached the end of search results.");
        }
     refs.upBtn.classList.remove('js-hidden');

@@ -6,6 +6,7 @@ export default class ImgApiService {
   constructor() {
     this.searchQuery ='';
     this.page = 1;
+    this.per_page = 40;
   }
 
   async fetchImg() {
@@ -16,7 +17,7 @@ export default class ImgApiService {
       orientacion: 'horizontal',
       safesearch: true,
       page: this.page,
-      per_page: 40,
+      per_page: this.per_page,
     })
     const url = `${BASE_URL}?${searchParam}`;
 
