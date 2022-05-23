@@ -30,8 +30,8 @@ document.addEventListener('DOMContentLoaded', infinitiScroll);
 function onSearch(e) {
   e.preventDefault();
   clearImgGallary();
-  stopScroll = true;
-  onClickSearch = true;
+  // stopScroll = true;
+  // onClickSearch = true;
   imgApiService.query = e.currentTarget.elements.searchQuery.value.trim();
   imgApiService.resetPage();
 
@@ -73,6 +73,7 @@ function onScroll(e) {
     .catch(error => {
       console.log(error);
     })
+
 }
 
 function appendCardMarkup (data) {
@@ -82,6 +83,8 @@ function appendCardMarkup (data) {
 function clearImgGallary() {
   refs.imgGallery.innerHTML = "";
   refs.upBtn.classList.add('js-hidden');
+  stopScroll = true;
+  onClickSearch = true;
 }
 
 function smoothlyScroll() {
