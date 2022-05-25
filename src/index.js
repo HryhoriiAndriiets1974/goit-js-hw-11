@@ -15,9 +15,9 @@ const lightbox = new SimpleLightbox('.gallery a', {
 });
 
 // -------------------------- counters
-let i = 0;
-let j = 0;
-let k = 0;
+// let i = 0;
+// let j = 0;
+// let k = 0;
 // ------------------------------------------
 let stopScroll = true;
 let onClickSearch = false;
@@ -35,12 +35,10 @@ refs.upBtn.addEventListener('click', onUpBtn);
 // window.addEventListener('scroll', infinitiScroll);
 
 function onSearch(e) {
-  i++; console.log(`Counter = ${i} -----------------`);
-  j++; console.log('onSearch =', j);
+  // i++; console.log(`Counter = ${i} -----------------`);
+  // j++; console.log('onSearch =', j);
   e.preventDefault();
   clearImgGallary();
-  // stopScroll = true;
-  // onClickSearch = true;
   imgApiService.query = e.currentTarget.elements.searchQuery.value.trim();
   imgApiService.resetPage();
 
@@ -59,13 +57,13 @@ function onSearch(e) {
     // smoothlyScroll();
   });
   onClickSearch = true;
-  k = 0;
+  // k = 0;
 }
 
 function onScroll(e) {
 
-  i++; console.log(`Counter = ${i} -----------------`);
-  k++; console.log('onScroll =', k);
+  // i++; console.log(`Counter = ${i} -----------------`);
+  // k++; console.log('onScroll =', k);
 
   imgApiService.fetchImg()
     .then(({hits, totalHits}) => {
@@ -87,11 +85,18 @@ function onScroll(e) {
     .catch(error => {
       console.log(error);
     })
-    j = 0;
-}
+    // j = 0;
+  }
 
 function appendCardMarkup (data) {
   refs.imgGallery.insertAdjacentHTML('beforeend', imgCard(data));
+      // ----- 3
+        // TODO: observer logic
+        const lastCards = document.querySelector('.photo-card:last-child');
+
+        if (lastCards) {
+          io.observe(lastCards);
+        }
 }
 
 function clearImgGallary() {
@@ -149,3 +154,20 @@ function onUpBtn() {
 //     onScroll();
 //   }
 // }
+
+
+// ----- attempt -3
+const io = new IntersectionObserver(
+  ([entry], observer) => {
+    //  console.log(entry);
+    if (entry.isIntersecting) {
+      observer.unobserve(entry.target);
+      onScroll();
+    }
+  },
+    {
+    root: null,
+    rootMargins: "100px",
+    threshold: 0,
+    }
+  );
