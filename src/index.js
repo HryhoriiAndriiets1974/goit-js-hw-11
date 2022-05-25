@@ -57,10 +57,6 @@ function onScroll(e) {
 
   imgApiService.fetchImg()
     .then(({hits, totalHits}) => {
-      console.log('imgApiService.page');
-      console.log(imgApiService.page);
-      console.log(imgApiService.per_page);
-      console.log(Math.ceil(totalHits / imgApiService.per_page));
 
         if (imgApiService.page > Math.ceil(totalHits / imgApiService.per_page)) {
         stopScroll = false;
@@ -115,7 +111,7 @@ window.scrollBy({
   let options = {
     root: null,
     rootMargins: "0px",
-    threshold: 0
+    threshold: 0,
   };
   const observer = new IntersectionObserver(handleIntersect, options);
   observer.observe(document.querySelector(".footer"));
