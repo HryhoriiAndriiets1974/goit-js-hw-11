@@ -14,6 +14,11 @@ const lightbox = new SimpleLightbox('.gallery a', {
   captionDelay: 1000,
 });
 
+// -------------------------- counters
+let i = 0;
+let j = 0;
+let k = 0;
+// ------------------------------------------
 let stopScroll = true;
 let onClickSearch = false;
 const refs = getRefs();
@@ -28,6 +33,8 @@ document.addEventListener('DOMContentLoaded', infinitiScroll);
 // window.addEventListener('scroll', infinitiScroll);
 
 function onSearch(e) {
+  i++; console.log(`Counter = ${i} -----------------`);
+  j++; console.log('onSearch =', j);
   e.preventDefault();
   clearImgGallary();
   // stopScroll = true;
@@ -49,18 +56,21 @@ function onSearch(e) {
     lightbox.refresh();
     // smoothlyScroll();
   });
+  onClickSearch = true;
+  k = 0;
 }
 
 function onScroll(e) {
 
-  if (!onClickSearch) return;
+  i++; console.log(`Counter = ${i} -----------------`);
+  k++; console.log('onScroll =', k);
 
   imgApiService.fetchImg()
     .then(({hits, totalHits}) => {
 
         if (imgApiService.page > Math.ceil(totalHits / imgApiService.per_page)) {
         stopScroll = false;
-        console.log('erd', imgApiService.page);
+        // console.log('erd', imgApiService.page);
         return Notify.warning("We're sorry, but you've reached the end of search results.");
       }
 
@@ -75,7 +85,7 @@ function onScroll(e) {
     .catch(error => {
       console.log(error);
     })
-
+    j = 0;
 }
 
 function appendCardMarkup (data) {
@@ -86,7 +96,7 @@ function clearImgGallary() {
   refs.imgGallery.innerHTML = "";
   refs.upBtn.classList.add('js-hidden');
   stopScroll = true;
-  onClickSearch = true;
+  // onClickSearch = true;
 }
 
 function smoothlyScroll() {
@@ -116,12 +126,14 @@ window.scrollBy({
   const observer = new IntersectionObserver(handleIntersect, options);
   observer.observe(document.querySelector(".footer"));
   //an initial load of some data
+  if (!onClickSearch) return;
   onScroll();
 };
 
 function handleIntersect(entries) {
-  if (entries[0].isIntersecting && stopScroll) {
-    // console.warn("something is intersecting with the viewport");
+  if (entries[0].isIntersecting) {
+    // console.warn("something is intersecting with the viewport"); && stopScroll
+    if (!onClickSearch) return;
     onScroll();
   }
 }
