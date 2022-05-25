@@ -27,7 +27,9 @@ const imgApiService = new ImgApiService();
 refs.searchForm.addEventListener('submit', onSearch);
 refs.loadMore.addEventListener('click', onScroll);
 refs.upBtn.addEventListener('click', onUpBtn);
-document.addEventListener('DOMContentLoaded', infinitiScroll);
+
+// ===================================== error scroll 1/2
+// document.addEventListener('DOMContentLoaded', infinitiScroll);
 
 // ========================================== bed old 1/2
 // window.addEventListener('scroll', infinitiScroll);
@@ -109,6 +111,15 @@ window.scrollBy({
   behavior: "smooth",
 });
 };
+
+function onUpBtn() {
+  if (window.pageYOffset > 0) {
+    window.scrollBy(0, -40);
+    setTimeout(onUpBtn, 0);
+  }
+}
+
+
 // =============================================== bed old 2/2
 // function infinitiScroll() {
 //     console.log(window.scrollY + window.innerHeight +1 - document.documentElement.scrollHeight);
@@ -117,30 +128,24 @@ window.scrollBy({
 //     onScroll();
 //   }};
 
-  function infinitiScroll() {
-  let options = {
-    root: null,
-    rootMargins: "0px",
-    threshold: 0,
-  };
-  const observer = new IntersectionObserver(handleIntersect, options);
-  observer.observe(document.querySelector(".footer"));
-  //an initial load of some data
-  if (!onClickSearch) return;
-  onScroll();
-};
+// ============================================== error scroll 2/2
+//   function infinitiScroll() {
+//   let options = {
+//     root: null,
+//     rootMargins: "0px",
+//     threshold: 0,
+//   };
+//   const observer = new IntersectionObserver(handleIntersect, options);
+//   observer.observe(document.querySelector(".footer"));
+//   //an initial load of some data
+//   if (!onClickSearch) return;
+//   onScroll();
+// };
 
-function handleIntersect(entries) {
-  if (entries[0].isIntersecting) {
-    // console.warn("something is intersecting with the viewport"); && stopScroll
-    if (!onClickSearch) return;
-    onScroll();
-  }
-}
-
-function onUpBtn() {
-  if (window.pageYOffset > 0) {
-    window.scrollBy(0, -40);
-    setTimeout(onUpBtn, 0);
-  }
-}
+// function handleIntersect(entries) {
+//   if (entries[0].isIntersecting) {
+//     // console.warn("something is intersecting with the viewport"); && stopScroll
+//     if (!onClickSearch) return;
+//     onScroll();
+//   }
+// }
